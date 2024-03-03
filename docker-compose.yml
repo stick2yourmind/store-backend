@@ -6,7 +6,7 @@ services:
     image: postgres:alpine3.19
     container_name: edge-store-backend-postgres
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/pgsql/data
     ports:
     - "${POSTGRES_PORT}:5432"
     environment:
