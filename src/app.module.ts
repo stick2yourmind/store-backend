@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { OrmModule } from './db/orm/orm.module';
 import { ConfigModule } from '@nestjs/config';
 import { AppLoggerMiddleware } from 'src/common/logger/request-response.logger';
+import { UserModule } from 'src/core/user/user.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { AppLoggerMiddleware } from 'src/common/logger/request-response.logger';
       isGlobal: true,
     }),
     OrmModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
