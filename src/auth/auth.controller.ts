@@ -25,4 +25,10 @@ export class AuthController {
     this._authService.setCookie(res, user.token);
     return user;
   }
+
+  @Post('sign-out')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    this._authService.clearCookie(res);
+    return { success: true };
+  }
 }
