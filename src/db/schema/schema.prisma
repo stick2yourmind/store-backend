@@ -72,6 +72,21 @@ model Product{
 
   // Order items relation
   order_items     Orderitem[]
+
+  // Product category relation
+  category     Category[]
+}
+
+model Category{
+  id              Int       @id @default(autoincrement())
+  name            String    @db.VarChar
+  description     String?   @db.VarChar
+  
+  createdAt       DateTime  @default(now()) @db.Timestamptz(0)
+  updatedAt       DateTime  @updatedAt @db.Timestamptz(0)
+
+  // Product relation
+  products        Product[]
 }
 
 enum UserRole {
