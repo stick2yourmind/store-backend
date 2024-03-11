@@ -16,15 +16,16 @@ const imageGenerator = (num: number) => {
 };
 
 async function seed(): Promise<void> {
+  // pass 123456
   const initialUsers: Prisma.UserCreateManyInput[] = [
     {
       email: 'admin@default.com',
-      password: '$2b$10$urg/FM3vis/wZzamdoBNHe.VpI6YiRy6ed/7LUrbOg1EIXgF3iAHC',
+      password: '$2b$10$239VHgLLtRCr2yvzScx/ZeA4T9cvoEclV013E4WP9F9fvKDh611xC',
       role: [UserRole.ADMIN],
     },
     {
       email: 'user@default.com',
-      password: '$2b$10$urg/FM3vis/wZzamdoBNHe.VpI6YiRy6ed/7LUrbOg1EIXgF3iAHC',
+      password: '$2b$10$239VHgLLtRCr2yvzScx/ZeA4T9cvoEclV013E4WP9F9fvKDh611xC',
     },
   ];
   await prisma.user.createMany({ data: initialUsers });
