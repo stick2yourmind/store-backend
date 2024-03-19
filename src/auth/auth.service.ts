@@ -58,7 +58,7 @@ export class AuthService {
   setCookie(res: Response, token: string) {
     res.cookie('userToken', token, {
       expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
-      httpOnly: this._configService.getOrThrow('NODE_END') === 'PROD',
+      httpOnly: this._configService.getOrThrow('NODE_ENV') === 'PROD',
       secure: true,
       sameSite: 'none',
     });
@@ -67,7 +67,7 @@ export class AuthService {
   clearCookie(res: Response) {
     res.cookie('userToken', '', {
       expires: new Date(Date.now()),
-      httpOnly: this._configService.getOrThrow('NODE_END') === 'PROD',
+      httpOnly: this._configService.getOrThrow('NODE_ENV') === 'PROD',
       secure: true,
       sameSite: 'none',
     });
