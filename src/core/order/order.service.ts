@@ -93,6 +93,11 @@ export class OrderService {
 
   async findManyByUserId(userId: number) {
     return await this._prismaService.order.findMany({
+      orderBy: [
+        {
+          id: 'asc',
+        },
+      ],
       where: {
         userId: userId,
         // isApproved: true,
