@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppLoggerMiddleware } from 'src/common/logger/request-response.logger';
 import { AuthModule } from 'src/auth/auth.module';
 import { UserModule } from 'src/core/user/user.module';
+import { ProductModule } from 'src/core/product/product.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UserModule } from 'src/core/user/user.module';
     OrmModule,
     AuthModule,
     UserModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],
