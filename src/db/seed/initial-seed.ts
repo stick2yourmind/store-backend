@@ -2,6 +2,7 @@ import { Prisma, PrismaClient, UserRole } from '@prisma/client';
 import { config as dotenvConfig } from 'dotenv';
 import { faker } from '@faker-js/faker';
 import { ConfigService } from '@nestjs/config';
+import { randomIntFromInterval } from 'src/utils/random';
 
 dotenvConfig({ path: '.env' });
 const configService = new ConfigService();
@@ -15,21 +16,34 @@ const imageGenerator = (num: number) => {
 };
 
 async function seed(): Promise<void> {
+  // pass 123456
   const initialUsers: Prisma.UserCreateManyInput[] = [
     {
       email: 'admin@default.com',
-      password: '$2b$10$urg/FM3vis/wZzamdoBNHe.VpI6YiRy6ed/7LUrbOg1EIXgF3iAHC',
+      password: '$2b$10$239VHgLLtRCr2yvzScx/ZeA4T9cvoEclV013E4WP9F9fvKDh611xC',
       role: [UserRole.ADMIN],
     },
     {
       email: 'user@default.com',
-      password: '$2b$10$urg/FM3vis/wZzamdoBNHe.VpI6YiRy6ed/7LUrbOg1EIXgF3iAHC',
+      password: '$2b$10$239VHgLLtRCr2yvzScx/ZeA4T9cvoEclV013E4WP9F9fvKDh611xC',
     },
   ];
   await prisma.user.createMany({ data: initialUsers });
 
+  const categories = faker.helpers.uniqueArray(faker.science.unit, 3);
+
+  // Insert categories into database
+  const fakeCategories: Prisma.CategoryCreateManyInput[] = Array.from({ length: 3 }, (_, i) => i).map(
+    (_, i) => ({
+      name: categories[i].name,
+      description: faker.commerce.productDescription(),
+    }),
+  );
+  await prisma.category.createMany({ data: fakeCategories });
+
+  const products = faker.helpers.uniqueArray(faker.science.chemicalElement, 33);
   const fakeProducts = Array.from({ length: 33 }, (_, i) => i).map((_, i) => ({
-    name: faker.science.chemicalElement().name,
+    name: products[i].name,
     description: faker.commerce.productDescription(),
     image: imageGenerator(i + 1),
     price:
@@ -38,7 +52,15 @@ async function seed(): Promise<void> {
     stock: Number(faker.commerce.price({ min: 1, max: 100, dec: 0 })),
   }));
 
-  await prisma.product.createMany({ data: fakeProducts });
+  for (const product of fakeProducts) {
+    const category = randomIntFromInterval(1, categories.length);
+    await prisma.product.create({
+      data: {
+        ...product,
+        category: { connect: [{ id: category }] },
+      },
+    });
+  }
 }
 
 seed()
