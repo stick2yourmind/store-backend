@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class FilterQuery {
   @IsOptional()
@@ -9,8 +9,8 @@ export class FilterQuery {
   query: string;
 
   @IsOptional()
-  @Type(() => String)
-  @IsString()
+  @Type(() => Number)
+  @IsNumber()
   @IsNotEmpty()
-  category: string;
+  category: number;
 }

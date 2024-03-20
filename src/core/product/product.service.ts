@@ -32,12 +32,7 @@ export class ProductService {
       },
       where: {
         category: {
-          some: {
-            name: {
-              contains: category,
-              mode: 'insensitive',
-            },
-          },
+          some: { id: category },
         },
         name: {
           contains: query,
@@ -49,10 +44,7 @@ export class ProductService {
       where: {
         category: {
           some: {
-            name: {
-              contains: category,
-              mode: 'insensitive',
-            },
+            id: category,
           },
         },
         name: {
