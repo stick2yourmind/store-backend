@@ -12,18 +12,18 @@ export class AuthController {
 
   @Post('sign-in')
   async signIn(@Res({ passthrough: true }) res: Response, @Body() signInInput: SignInInput) {
-    const user = await this._authService.signIn(signInInput);
+    const { user, token } = await this._authService.signIn(signInInput);
 
-    this._authService.setCookie(res, user.token);
-    return user;
+    this._authService.setCookie(res, token, user.role);
+    return { user, token };
   }
 
   @Post('sign-up')
   async signUp(@Res({ passthrough: true }) res: Response, @Body() signUpInput: SignUpInput) {
-    const user = await this._authService.signUp(signUpInput);
+    const { user, token } = await this._authService.signUp(signUpInput);
 
-    this._authService.setCookie(res, user.token);
-    return user;
+    this._authService.setCookie(res, token, user.role);
+    return { user, token };
   }
 
   @Post('sign-out')
