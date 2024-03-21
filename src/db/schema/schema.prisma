@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int         @id @default(autoincrement())
+  email           String      @unique @db.VarChar
+  password        String      @db.VarChar
+  role            UserRole[]  @default([USER])
+
+  createdAt       DateTime    @default(now()) @db.Timestamptz(0)
+  updatedAt       DateTime    @updatedAt @db.Timestamptz(0)
+
+  orders          Order[]
+}
+
+model Order{
+  id              Int       @id @default(autoincrement())
+  total           Decimal   @db.Money
+  isApproved      Boolean   @default(false)
+  
+  createdAt       DateTime  @default(now()) @db.Timestamptz(0)
+  updatedAt       DateTime  @updatedAt @db.Timestamptz(0)
+
+  // User relation
+  user        User @relation(fields: [userId], references: [id])
+  userId      Int
+
+  // Order items relation
+  order_items     Orderitem[]
+}
+
+model Orderitem{
+  id              Int       @id @default(autoincrement())
+  subtotal        Decimal   @db.Money
+  price           Decimal   @db.Money
+  quantity        Int
+  
+  createdAt       DateTime  @default(now()) @db.Timestamptz(0)
+  updatedAt       DateTime  @updatedAt @db.Timestamptz(0)
+
+  // Order relation
+  order        Order @relation(fields: [orderId], references: [id])
+  orderId      Int
+
+  // Product relation
+  product        Product @relation(fields: [productId], references: [id])
+  productId      Int
+}
+
+model Product{
+  id              Int       @id @default(autoincrement())
+  name            String    @db.VarChar
+  description     String?   @db.VarChar
+  price           Decimal   @db.Money
+  stock           Int   
+  image           String    @db.VarChar   
+  
+  createdAt       DateTime  @default(now()) @db.Timestamptz(0)
+  updatedAt       DateTime  @updatedAt @db.Timestamptz(0)
+
+  // Order items relation
+  order_items     Orderitem[]
+
+  // Product category relation
+  category     Category[]
+}
+
+model Category{
+  id              Int       @id @default(autoincrement())
+  name            String    @db.VarChar
+  description     String?   @db.VarChar
+  
+  createdAt       DateTime  @default(now()) @db.Timestamptz(0)
+  updatedAt       DateTime  @updatedAt @db.Timestamptz(0)
+
+  // Product relation
+  products        Product[]
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
