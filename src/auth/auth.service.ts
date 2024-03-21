@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { UserRole } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
 import { SignInInput } from 'src/auth/dto/sign-in.input.dto';
@@ -29,6 +30,7 @@ export class AuthService {
         email: user.email,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+        role: user.role,
       },
     };
   }
@@ -51,14 +53,22 @@ export class AuthService {
         email: user.email,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+        role: user.role,
       },
     };
   }
 
-  setCookie(res: Response, token: string) {
+  setCookie(res: Response, token: string, userRole: UserRole[]) {
+    console.log('🚀 ~ file: auth.service.ts:62 ~ AuthService ~ setCookie ~ token:', token);
     res.cookie('userToken', token, {
       expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
-      httpOnly: this._configService.getOrThrow('NODE_END') === 'PROD',
+      httpOnly: this._configService.getOrThrow('NODE_ENV') === 'PROD',
+      secure: true,
+      sameSite: 'none',
+    });
+    res.cookie('role', String(userRole), {
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      httpOnly: this._configService.getOrThrow('NODE_ENV') === 'PROD',
       secure: true,
       sameSite: 'none',
     });
@@ -67,7 +77,13 @@ export class AuthService {
   clearCookie(res: Response) {
     res.cookie('userToken', '', {
       expires: new Date(Date.now()),
-      httpOnly: this._configService.getOrThrow('NODE_END') === 'PROD',
+      httpOnly: this._configService.getOrThrow('NODE_ENV') === 'PROD',
+      secure: true,
+      sameSite: 'none',
+    });
+    res.cookie('role', '', {
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      httpOnly: this._configService.getOrThrow('NODE_ENV') === 'PROD',
       secure: true,
       sameSite: 'none',
     });
