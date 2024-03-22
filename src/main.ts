@@ -13,6 +13,18 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new LoggerInterceptor());
 
+  // add cors middleware
+  app.enableCors({
+    origin: [
+      configService.getOrThrow('FRONT_APP_BASE_URL'),
+      configService.getOrThrow('FRONT_APP_BASE_URL_TEST'),
+      configService.getOrThrow('FRONT_APP_BASE_URL_STAGE'),
+      configService.getOrThrow('FRONT_APP_BASE_URL_LOCAL'),
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
+
   // Add cookie middleware
   app.use(cookieParser());
 
